@@ -1,59 +1,80 @@
+"use client"
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Brain, Target } from "lucide-react"
+import { Brain, Target, TrendingUp, Award } from "lucide-react"
+import { useEffect, useState } from "react"
+import { Badge } from "@/components/ui/badge"
 
 export function ModelInsights() {
+  const [modelData, setModelData] = useState(null)
+  
+  useEffect(() => {
+    fetch('/models/model_info.json')
+      .then(res => res.json())
+      .then(data => setModelData(data))
+      .catch(err => console.error('Failed to load model data:', err))
+  }, [])
+  
+  if (!modelData) {
+    return <div>Loading model insights...</div>
+  }
+  
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Brain className="h-5 w-5 text-primary" />
-            Model Performance
-          </CardTitle>
-          <CardDescription>Random Forest Classifier</CardDescription>
+      <Card className="bg-white border-slate-200 shadow-sm">
+        <CardHeader className="pb-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-slate-800">
+              <Brain className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <CardTitle className="text-xl font-bold text-slate-800">Model Performance</CardTitle>
+              <CardDescription className="text-slate-600">XGBoost Gradient Boosting</CardDescription>
+            </div>
+          </div>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">ROC-AUC Score</span>
-              <span className="text-lg font-bold text-primary">0.8642</span>
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-3 gap-6">
+            <div className="text-center p-4 rounded-lg bg-slate-50 border border-slate-200">
+              <div className="text-2xl font-bold text-slate-800 mb-1">{modelData.roc_auc_score.toFixed(4)}</div>
+              <div className="text-sm text-slate-600 font-medium">ROC-AUC Score</div>
             </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Accuracy</span>
-              <span className="text-lg font-bold">93.4%</span>
+            <div className="text-center p-4 rounded-lg bg-slate-50 border border-slate-200">
+              <div className="text-2xl font-bold text-slate-800 mb-1">{modelData.accuracy ? (modelData.accuracy * 100).toFixed(1) + '%' : 'N/A'}</div>
+              <div className="text-sm text-slate-600 font-medium">Accuracy</div>
             </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Training Samples</span>
-              <span className="text-lg font-bold">120,000+</span>
+            <div className="text-center p-4 rounded-lg bg-slate-50 border border-slate-200">
+              <div className="text-2xl font-bold text-slate-800 mb-1">{modelData.test_samples.toLocaleString()}</div>
+              <div className="text-sm text-slate-600 font-medium">Test Samples</div>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Target className="h-5 w-5 text-accent" />
-            Key Features
-          </CardTitle>
-          <CardDescription>Most important predictors</CardDescription>
+      <Card className="bg-white border-slate-200 shadow-sm">
+        <CardHeader className="pb-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-slate-800">
+              <Target className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <CardTitle className="text-xl font-bold text-slate-800">Feature Importance</CardTitle>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            {[
-              { name: "Late Payments (90+ days)", importance: 0.28 },
-              { name: "Credit Utilization", importance: 0.19 },
-              { name: "Debt-to-Income Ratio", importance: 0.15 },
-              { name: "Age", importance: 0.12 },
-              { name: "Monthly Income", importance: 0.1 },
-            ].map((feature, idx) => (
-              <div key={idx} className="space-y-1">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">{feature.name}</span>
-                  <span className="font-medium">{(feature.importance * 100).toFixed(0)}%</span>
+            {modelData.feature_importance.slice(0, 5).map((feature, idx) => (
+              <div key={idx} className="p-3 rounded-lg bg-slate-50 border border-slate-200">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-medium text-slate-800">{feature.feature.replace(/([A-Z])/g, ' $1').trim()}</span>
+                  <span className="text-lg font-bold text-slate-800">{(feature.importance * 100).toFixed(1)}%</span>
                 </div>
-                <div className="h-2 bg-muted rounded-full overflow-hidden">
-                  <div className="h-full bg-primary rounded-full" style={{ width: `${feature.importance * 100}%` }} />
+                <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-slate-800 rounded-full" 
+                    style={{ width: `${feature.importance * 100}%` }} 
+                  />
                 </div>
               </div>
             ))}

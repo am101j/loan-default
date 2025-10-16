@@ -59,7 +59,7 @@ def load_and_clean_data():
     print("\n⚙️  Engineering features...")
     
     # Debt-to-Income Ratio
-    df['DebtRatio_Capped'] = df['DebtToIncomeRatio'].clip(upper=df['DebtToIncomeRatio'].quantile(0.95))
+    df['DebtRatio_Capped'] = df['DebtRatio'].clip(upper=df['DebtRatio'].quantile(0.95))
     
     # Total Credit Lines
     df['TotalCreditLines'] = (df['NumberOfOpenCreditLinesAndLoans'] + 

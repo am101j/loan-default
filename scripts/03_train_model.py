@@ -8,10 +8,11 @@ import numpy as np
 from pathlib import Path
 import json
 import pickle
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, roc_auc_score, confusion_matrix
 from sklearn.preprocessing import StandardScaler
+import xgboost as xgb
 
 def train_model():
     """Train the loan default prediction model"""
@@ -30,7 +31,7 @@ def train_model():
         'RevolvingUtilizationOfUnsecuredLines',
         'age',
         'NumberOfTime30-59DaysPastDueNotWorse',
-        'DebtToIncomeRatio',
+        'DebtRatio',
         'MonthlyIncome',
         'NumberOfOpenCreditLinesAndLoans',
         'NumberOfTimes90DaysLate',
@@ -64,20 +65,32 @@ def train_model():
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
     
-    # Train Random Forest model
-    print("\n🤖 Training Random Forest model...")
-    model = RandomForestClassifier(
-        n_estimators=100,
-        max_depth=10,
-        min_samples_split=20,
-        min_samples_leaf=10,
-        class_weight='balanced',
+    # Train XGBoost model (stronger than Random Forest)
+    print("\n🚀 Training XGBoost model...")
+    
+    # Calculate scale_pos_weight for class imbalance
+    scale_pos_weight = (y_train == 0).sum() / (y_train == 1).sum()
+    
+    model = xgb.XGBClassifier(
+        n_estimators=500,
+        max_depth=8,
+        learning_rate=0.1,
+        subsample=0.8,
+        colsample_bytree=0.8,
+        scale_pos_weight=scale_pos_weight,
         random_state=42,
-        n_jobs=-1
+        n_jobs=-1,
+        eval_metric='logloss',
+        early_stopping_rounds=50
     )
     
-    model.fit(X_train_scaled, y_train)
-    print("✓ Model trained successfully!")
+    # Train with validation set
+    model.fit(
+        X_train_scaled, y_train,
+        eval_set=[(X_test_scaled, y_test)],
+        verbose=False
+    )
+    print("✓ XGBoost model trained successfully!")
     
     # Evaluate model
     print("\n📈 Evaluating model...")
@@ -86,8 +99,10 @@ def train_model():
     
     # Metrics
     roc_auc = roc_auc_score(y_test, y_pred_proba)
+    accuracy = (y_pred == y_test).mean()
     print(f"\n🎯 Model Performance:")
     print(f"  ROC-AUC Score: {roc_auc:.4f}")
+    print(f"  Accuracy: {accuracy:.4f}")
     
     print("\n📊 Classification Report:")
     print(classification_report(y_test, y_pred, target_names=['No Default', 'Default']))
@@ -125,7 +140,10 @@ def train_model():
         'features': feature_columns,
         'feature_importance': feature_importance.to_dict('records'),
         'roc_auc_score': float(roc_auc),
-        'test_samples': int(len(X_test))
+        'accuracy': float(accuracy),
+        'test_samples': int(len(X_test)),
+        'total_samples': int(len(X)),
+        'train_samples': int(len(X_train))
     }
     
     with open(model_dir / 'model_info.json', 'w') as f:

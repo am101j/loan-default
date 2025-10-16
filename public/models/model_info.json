@@ -1,0 +1,81 @@
+{
+  "features": [
+    "RevolvingUtilizationOfUnsecuredLines",
+    "age",
+    "NumberOfTime30-59DaysPastDueNotWorse",
+    "DebtRatio",
+    "MonthlyIncome",
+    "NumberOfOpenCreditLinesAndLoans",
+    "NumberOfTimes90DaysLate",
+    "NumberRealEstateLoansOrLines",
+    "NumberOfTime60-89DaysPastDueNotWorse",
+    "NumberOfDependents",
+    "DebtRatio_Capped",
+    "TotalCreditLines",
+    "UtilizationRate",
+    "LatePaymentRisk"
+  ],
+  "feature_importance": [
+    {
+      "feature": "LatePaymentRisk",
+      "importance": 0.2544214129447937
+    },
+    {
+      "feature": "UtilizationRate",
+      "importance": 0.11389831453561783
+    },
+    {
+      "feature": "NumberOfTimes90DaysLate",
+      "importance": 0.08828377723693848
+    },
+    {
+      "feature": "NumberOfTime30-59DaysPastDueNotWorse",
+      "importance": 0.0727350115776062
+    },
+    {
+      "feature": "RevolvingUtilizationOfUnsecuredLines",
+      "importance": 0.059810176491737366
+    },
+    {
+      "feature": "NumberOfTime60-89DaysPastDueNotWorse",
+      "importance": 0.0543534941971302
+    },
+    {
+      "feature": "NumberRealEstateLoansOrLines",
+      "importance": 0.05189881473779678
+    },
+    {
+      "feature": "DebtRatio_Capped",
+      "importance": 0.04694979265332222
+    },
+    {
+      "feature": "TotalCreditLines",
+      "importance": 0.04606449231505394
+    },
+    {
+      "feature": "DebtRatio",
+      "importance": 0.04481249675154686
+    },
+    {
+      "feature": "age",
+      "importance": 0.04435344785451889
+    },
+    {
+      "feature": "MonthlyIncome",
+      "importance": 0.04380564019083977
+    },
+    {
+      "feature": "NumberOfOpenCreditLinesAndLoans",
+      "importance": 0.04066695272922516
+    },
+    {
+      "feature": "NumberOfDependents",
+      "importance": 0.03794625401496887
+    }
+  ],
+  "roc_auc_score": 0.8365261336709311,
+  "accuracy": 0.8888259217281153,
+  "test_samples": 29998,
+  "total_samples": 149986,
+  "train_samples": 119988
+}

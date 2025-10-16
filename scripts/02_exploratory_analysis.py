@@ -55,8 +55,8 @@ def perform_eda():
     })
     
     # Debt Ratio analysis
-    avg_debt_default = defaulters['DebtToIncomeRatio'].mean()
-    avg_debt_no_default = non_defaulters['DebtToIncomeRatio'].mean()
+    avg_debt_default = defaulters['DebtRatio'].mean()
+    avg_debt_no_default = non_defaulters['DebtRatio'].mean()
     print(f"\n  Debt-to-Income Ratio:")
     print(f"    Defaulters: {avg_debt_default:.2f}")
     print(f"    Non-Defaulters: {avg_debt_no_default:.2f}")

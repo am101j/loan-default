@@ -1,0 +1,38 @@
+{
+  "total_borrowers": 149986,
+  "defaulters": 10025,
+  "non_defaulters": 139961,
+  "default_rate": 6.683957169335805,
+  "risk_factors": [
+    {
+      "factor": "Age",
+      "defaulter_avg": 45.921097256857855,
+      "non_defaulter_avg": 52.74736533748687,
+      "impact": "lower"
+    },
+    {
+      "factor": "Debt-to-Income Ratio",
+      "defaulter_avg": 295.1505047515312,
+      "non_defaulter_avg": 357.14680036629585,
+      "impact": "lower"
+    },
+    {
+      "factor": "Monthly Income",
+      "defaulter_avg": 5592.671720698254,
+      "non_defaulter_avg": 6477.840519859104,
+      "impact": "lower"
+    },
+    {
+      "factor": "90+ Days Late",
+      "defaulter_avg": 2.091571072319202,
+      "non_defaulter_avg": 0.1352376733518623,
+      "impact": "higher"
+    },
+    {
+      "factor": "Credit Utilization",
+      "defaulter_avg": 436.771708839611,
+      "non_defaulter_avg": 616.94093173071,
+      "impact": "lower"
+    }
+  ]
+}
