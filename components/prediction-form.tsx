@@ -43,7 +43,7 @@ export function PredictionForm() {
       const result = await response.json()
       setPrediction(result)
     } catch (error) {
-      console.error("[v0] Prediction error:", error)
+      console.error("Prediction error:", error)
       setPrediction({
         error: "Failed to generate prediction. Please ensure the model is trained.",
       })
