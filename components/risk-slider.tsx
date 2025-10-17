@@ -8,7 +8,6 @@ import { Sliders, TrendingUp, TrendingDown } from "lucide-react"
 
 export function RiskSlider() {
   const [sliderValues, setSliderValues] = useState({
-    age: [35],
     monthlyIncome: [5000],
     debtRatio: [0.35],
     creditUtilization: [0.25],
@@ -37,8 +36,7 @@ export function RiskSlider() {
       // Debt ratio
       riskScore += (sliderValues.debtRatio[0] / 10) * 0.15
       
-      // Age factor
-      if (sliderValues.age[0] < 30) riskScore += 0.05
+
       
       // Income factor
       if (sliderValues.monthlyIncome[0] < 3000) riskScore += 0.08
@@ -120,30 +118,6 @@ export function RiskSlider() {
 
       {/* Interactive Sliders */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Age Slider */}
-        <Card className="bg-white border-slate-200">
-          <CardContent className="p-6">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-slate-700">Age</label>
-                <span className="text-lg font-bold text-slate-800">{sliderValues.age[0]}</span>
-              </div>
-              <Slider
-                value={sliderValues.age}
-                onValueChange={(value) => handleSliderChange('age', value)}
-                max={80}
-                min={18}
-                step={1}
-                className="w-full"
-              />
-              <div className="flex justify-between text-xs text-slate-500">
-                <span>18</span>
-                <span>80</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Monthly Income Slider */}
         <Card className="bg-white border-slate-200">
           <CardContent className="p-6">

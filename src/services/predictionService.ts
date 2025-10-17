@@ -36,15 +36,11 @@ export class PredictionService {
   }
 
   private static validateApplication(app: LoanApplication): void {
-    const required = ['age', 'monthlyIncome', 'debtRatio', 'creditUtilization']
+    const required = ['monthlyIncome', 'debtRatio', 'creditUtilization']
     const missing = required.filter(field => app[field as keyof LoanApplication] == null)
     
     if (missing.length > 0) {
       throw new Error(`Missing required fields: ${missing.join(', ')}`)
-    }
-    
-    if (app.age < 18 || app.age > 100) {
-      throw new Error('Age must be between 18 and 100')
     }
     
     if (app.monthlyIncome <= 0) {
@@ -66,9 +62,7 @@ export class PredictionService {
     // Debt-to-income ratio
     score += Math.min(app.debtRatio, 2.0) * 0.15
     
-    // Age factor (younger = higher risk)
-    if (app.age < 25) score += 0.08
-    else if (app.age < 35) score += 0.04
+
     
     // Income factor
     if (app.monthlyIncome < 2500) score += 0.10

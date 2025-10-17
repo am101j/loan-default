@@ -39,7 +39,6 @@ def predict():
         # Extract and prepare features in the same order as training
         features = {
             'RevolvingUtilizationOfUnsecuredLines': float(data['creditUtilization']),
-            'age': float(data['age']),
             'NumberOfTime30-59DaysPastDueNotWorse': int(data['late30Days']),
             'DebtRatio': float(data['debtRatio']),
             'MonthlyIncome': float(data['monthlyIncome']),
@@ -62,7 +61,7 @@ def predict():
         
         # Create feature array in correct order
         feature_order = [
-            'RevolvingUtilizationOfUnsecuredLines', 'age', 'NumberOfTime30-59DaysPastDueNotWorse',
+            'RevolvingUtilizationOfUnsecuredLines', 'NumberOfTime30-59DaysPastDueNotWorse',
             'DebtRatio', 'MonthlyIncome', 'NumberOfOpenCreditLinesAndLoans',
             'NumberOfTimes90DaysLate', 'NumberRealEstateLoansOrLines',
             'NumberOfTime60-89DaysPastDueNotWorse', 'NumberOfDependents',
@@ -115,8 +114,7 @@ def predict():
             top_factors.append({"factor": "High Debt-to-Income Ratio", "impact": "high"})
         if features['MonthlyIncome'] < 3000:
             top_factors.append({"factor": "Low Monthly Income", "impact": "medium"})
-        if features['age'] < 30:
-            top_factors.append({"factor": "Young Age", "impact": "low"})
+
         
         if not top_factors:
             top_factors.append({"factor": "Clean Payment History", "impact": "low"})

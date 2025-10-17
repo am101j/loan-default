@@ -17,7 +17,6 @@ export function PredictionForm() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [formData, setFormData] = useState({
-    age: "",
     monthlyIncome: "",
     debtRatio: "",
     creditUtilization: "",
@@ -110,7 +109,7 @@ export function PredictionForm() {
               <input
                 ref={fileInputRef}
                 type="file"
-                accept="image/*,.pdf"
+                accept="image/*"
                 onChange={handleImageUpload}
                 className="hidden"
               />
@@ -142,18 +141,7 @@ export function PredictionForm() {
             {/* Personal Information */}
             <div className="space-y-4">
               <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Personal Details</h3>
-              <div className="grid md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="age">Age</Label>
-                  <Input
-                    id="age"
-                    type="number"
-                    placeholder="e.g. 35"
-                    value={formData.age}
-                    onChange={(e) => handleChange("age", e.target.value)}
-                    required
-                  />
-                </div>
+              <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="monthlyIncome">Monthly Income ($)</Label>
                   <Input

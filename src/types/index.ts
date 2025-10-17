@@ -1,5 +1,4 @@
 export interface LoanApplication {
-  age: number
   monthlyIncome: number
   debtRatio: number
   creditUtilization: number

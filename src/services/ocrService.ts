@@ -2,17 +2,11 @@ import { OCRResult, LoanApplication } from '@/src/types'
 import { OCR_CONFIG } from '@/src/constants'
 
 export class OCRService {
-  static async processDocument(file: File, useHandwriting = false): Promise<OCRResult> {
+  static async processDocument(file: File): Promise<OCRResult> {
     try {
       this.validateFile(file)
       
       const buffer = await file.arrayBuffer()
-      const base64 = Buffer.from(buffer).toString('base64')
-      
-      if (useHandwriting && process.env.GOOGLE_VISION_API_KEY) {
-        return await this.processWithGoogleVision(base64)
-      }
-      
       return await this.processWithTesseract(Buffer.from(buffer))
     } catch (error) {
       throw new Error(`OCR processing failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
@@ -54,29 +48,7 @@ export class OCRService {
     }
   }
 
-  private static async processWithGoogleVision(base64: string): Promise<OCRResult> {
-    const response = await fetch(`https://vision.googleapis.com/v1/images:annotate?key=${process.env.GOOGLE_VISION_API_KEY}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        requests: [{
-          image: { content: base64 },
-          features: [{ type: 'DOCUMENT_TEXT_DETECTION' }]
-        }]
-      })
-    })
-    
-    const result = await response.json()
-    const text = result.responses[0]?.fullTextAnnotation?.text || ''
-    const extractedData = this.extractLoanData(text)
-    
-    return {
-      success: true,
-      extractedData,
-      rawText: text,
-      message: 'Document processed with Google Vision API'
-    }
-  }
+
 
   private static extractLoanData(text: string): Partial<LoanApplication> {
     const data: Partial<LoanApplication> = {}

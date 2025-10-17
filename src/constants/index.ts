@@ -21,7 +21,7 @@ export const OCR_CONFIG = {
   TESSERACT_PSM_MODE: '6',
   CHAR_WHITELIST: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz .:$,%',
   MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
-  SUPPORTED_FORMATS: ['image/jpeg', 'image/png', 'image/webp', 'application/pdf']
+  SUPPORTED_FORMATS: ['image/jpeg', 'image/png', 'image/webp']
 } as const
 
 export const API_ENDPOINTS = {

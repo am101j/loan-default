@@ -4,7 +4,6 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData()
     const file = formData.get('image') as File
-    const useHandwriting = formData.get('handwriting') === 'true'
     
     if (!file) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 })
@@ -12,12 +11,6 @@ export async function POST(request: NextRequest) {
 
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
-    const base64 = buffer.toString('base64')
-    
-    // Use Google Vision API for handwritten text
-    if (useHandwriting && process.env.GOOGLE_VISION_API_KEY) {
-      return await processWithGoogleVision(base64)
-    }
     
     // Use dynamic import to avoid SSR issues
     const { createWorker } = await import('tesseract.js')
@@ -63,8 +56,7 @@ function extractLoanData(text: string) {
   // Extract any numbers that might be loan data
   const numbers = text.match(/\d+/g) || []
   
-  const ageMatch = text.match(/(?:age|Age)\s*:?\s*(\d{2,3})/i)
-  if (ageMatch) data.age = ageMatch[1]
+
   
   const incomeMatch = text.match(/(?:income|salary|monthly)\s*:?\s*\$?([\d,]+)/i)
   if (incomeMatch) data.monthlyIncome = incomeMatch[1].replace(/,/g, '')
@@ -92,31 +84,3 @@ function extractLoanData(text: string) {
   return data
 }
 
-async function processWithGoogleVision(base64: string) {
-  try {
-    const response = await fetch(`https://vision.googleapis.com/v1/images:annotate?key=${process.env.GOOGLE_VISION_API_KEY}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        requests: [{
-          image: { content: base64 },
-          features: [{ type: 'DOCUMENT_TEXT_DETECTION' }]
-        }]
-      })
-    })
-    
-    const result = await response.json()
-    const text = result.responses[0]?.fullTextAnnotation?.text || ''
-    const extractedData = extractLoanData(text)
-    
-    return NextResponse.json({
-      success: true,
-      extractedData,
-      rawText: text,
-      message: 'Handwritten text processed with Google Vision'
-    })
-  } catch (error) {
-    console.error('Google Vision error:', error)
-    return NextResponse.json({ error: 'Handwriting recognition failed' }, { status: 500 })
-  }
-}

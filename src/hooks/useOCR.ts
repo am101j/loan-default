@@ -7,7 +7,7 @@ interface UseOCRReturn {
   result: OCRResult | null
   loading: boolean
   error: string | null
-  processDocument: (file: File, useHandwriting?: boolean) => Promise<void>
+  processDocument: (file: File) => Promise<void>
   reset: () => void
 }
 
@@ -16,7 +16,7 @@ export const useOCR = (): UseOCRReturn => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const processDocument = useCallback(async (file: File, useHandwriting = false) => {
+  const processDocument = useCallback(async (file: File) => {
     setLoading(true)
     setError(null)
     
@@ -29,9 +29,6 @@ export const useOCR = (): UseOCRReturn => {
       
       const formData = new FormData()
       formData.append('image', file)
-      if (useHandwriting) {
-        formData.append('handwriting', 'true')
-      }
       
       const response = await fetch(API_ENDPOINTS.OCR, {
         method: 'POST',

@@ -6,7 +6,7 @@ export class ValidationUtils {
     
     // Required field validation
     const requiredFields: (keyof LoanApplication)[] = [
-      'age', 'monthlyIncome', 'debtRatio', 'creditUtilization'
+      'monthlyIncome', 'debtRatio', 'creditUtilization'
     ]
     
     requiredFields.forEach(field => {
@@ -15,12 +15,7 @@ export class ValidationUtils {
       }
     })
     
-    // Range validations
-    if (data.age != null) {
-      if (data.age < 18 || data.age > 100) {
-        errors.push('Age must be between 18 and 100')
-      }
-    }
+
     
     if (data.monthlyIncome != null) {
       if (data.monthlyIncome <= 0) {
