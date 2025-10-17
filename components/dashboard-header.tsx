@@ -25,7 +25,7 @@ export function DashboardHeader({ activeTab, onTabChange }: DashboardHeaderProps
               <Shield className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-white">CreditVision</h1>
+              <h1 className="text-xl font-bold text-white">RiskPulse</h1>
               <p className="text-sm text-slate-300">Enterprise Risk Platform</p>
             </div>
           </div>

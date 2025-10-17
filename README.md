@@ -1,4 +1,4 @@
-# 🏦 CreditVision AI - Enterprise Loan Default Prediction Platform
+# 🏦 RiskPulse AI - Enterprise Loan Default Prediction Platform
 
 A professional-grade AI-powered credit risk assessment platform that predicts loan default probability using advanced machine learning, helping financial institutions make data-driven lending decisions.
 
