@@ -1,7 +1,6 @@
 {
   "features": [
     "RevolvingUtilizationOfUnsecuredLines",
-    "age",
     "NumberOfTime30-59DaysPastDueNotWorse",
     "DebtRatio",
     "MonthlyIncome",
@@ -18,64 +17,67 @@
   "feature_importance": [
     {
       "feature": "LatePaymentRisk",
-      "importance": 0.2544214129447937
-    },
-    {
-      "feature": "UtilizationRate",
-      "importance": 0.11389831453561783
-    },
-    {
-      "feature": "NumberOfTimes90DaysLate",
-      "importance": 0.08828377723693848
-    },
-    {
-      "feature": "NumberOfTime30-59DaysPastDueNotWorse",
-      "importance": 0.0727350115776062
+      "importance": 0.26558518409729004
     },
     {
       "feature": "RevolvingUtilizationOfUnsecuredLines",
-      "importance": 0.059810176491737366
+      "importance": 0.0902705043554306
     },
     {
-      "feature": "NumberOfTime60-89DaysPastDueNotWorse",
-      "importance": 0.0543534941971302
+      "feature": "NumberOfTimes90DaysLate",
+      "importance": 0.08951965719461441
+    },
+    {
+      "feature": "NumberOfTime30-59DaysPastDueNotWorse",
+      "importance": 0.07824177294969559
+    },
+    {
+      "feature": "UtilizationRate",
+      "importance": 0.07348247617483139
     },
     {
       "feature": "NumberRealEstateLoansOrLines",
-      "importance": 0.05189881473779678
+      "importance": 0.05953589081764221
+    },
+    {
+      "feature": "NumberOfTime60-89DaysPastDueNotWorse",
+      "importance": 0.055163875222206116
     },
     {
       "feature": "DebtRatio_Capped",
-      "importance": 0.04694979265332222
+      "importance": 0.05360071733593941
     },
     {
       "feature": "TotalCreditLines",
-      "importance": 0.04606449231505394
+      "importance": 0.05068787559866905
     },
     {
       "feature": "DebtRatio",
-      "importance": 0.04481249675154686
-    },
-    {
-      "feature": "age",
-      "importance": 0.04435344785451889
+      "importance": 0.049272578209638596
     },
     {
       "feature": "MonthlyIncome",
-      "importance": 0.04380564019083977
+      "importance": 0.049088943749666214
     },
     {
       "feature": "NumberOfOpenCreditLinesAndLoans",
-      "importance": 0.04066695272922516
+      "importance": 0.0436442531645298
     },
     {
       "feature": "NumberOfDependents",
-      "importance": 0.03794625401496887
+      "importance": 0.04190635681152344
     }
   ],
-  "roc_auc_score": 0.8365261336709311,
-  "accuracy": 0.8888259217281153,
-  "test_samples": 29998,
-  "total_samples": 149986,
-  "train_samples": 119988
+  "roc_auc_score": 0.8248391879739836,
+  "accuracy": 0.8807333333333334,
+  "f1_score": 0.3738186909345467,
+  "confusion_matrix": {
+    "true_negatives": 25354,
+    "false_positives": 2641,
+    "false_negatives": 937,
+    "true_positives": 1068
+  },
+  "test_samples": 30000,
+  "total_samples": 150000,
+  "train_samples": 120000
 }

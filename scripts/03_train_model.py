@@ -10,7 +10,7 @@ import json
 import pickle
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, roc_auc_score, confusion_matrix
+from sklearn.metrics import classification_report, roc_auc_score, confusion_matrix, f1_score
 from sklearn.preprocessing import StandardScaler
 import xgboost as xgb
 
@@ -29,7 +29,6 @@ def train_model():
     # Select features for model
     feature_columns = [
         'RevolvingUtilizationOfUnsecuredLines',
-        'age',
         'NumberOfTime30-59DaysPastDueNotWorse',
         'DebtRatio',
         'MonthlyIncome',
@@ -100,9 +99,12 @@ def train_model():
     # Metrics
     roc_auc = roc_auc_score(y_test, y_pred_proba)
     accuracy = (y_pred == y_test).mean()
+    f1 = f1_score(y_test, y_pred)
+    
     print(f"\n🎯 Model Performance:")
     print(f"  ROC-AUC Score: {roc_auc:.4f}")
     print(f"  Accuracy: {accuracy:.4f}")
+    print(f"  F1 Score: {f1:.4f}")
     
     print("\n📊 Classification Report:")
     print(classification_report(y_test, y_pred, target_names=['No Default', 'Default']))
@@ -141,6 +143,13 @@ def train_model():
         'feature_importance': feature_importance.to_dict('records'),
         'roc_auc_score': float(roc_auc),
         'accuracy': float(accuracy),
+        'f1_score': float(f1),
+        'confusion_matrix': {
+            'true_negatives': int(cm[0][0]),
+            'false_positives': int(cm[0][1]),
+            'false_negatives': int(cm[1][0]),
+            'true_positives': int(cm[1][1])
+        },
         'test_samples': int(len(X_test)),
         'total_samples': int(len(X)),
         'train_samples': int(len(X_train))

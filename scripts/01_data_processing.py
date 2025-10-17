@@ -50,10 +50,10 @@ def load_and_clean_data():
         df['NumberOfDependents'].fillna(0, inplace=True)
         print(f"  - Filled missing NumberOfDependents with 0")
     
-    # Remove outliers (age > 100 or age < 18)
-    original_size = len(df)
-    df = df[(df['age'] >= 18) & (df['age'] <= 100)]
-    print(f"  - Removed {original_size - len(df)} outlier records (age)")
+    # Remove age column completely
+    if 'age' in df.columns:
+        df = df.drop('age', axis=1)
+        print(f"  - Removed age column from dataset")
     
     # Feature Engineering
     print("\n⚙️  Engineering features...")
@@ -68,9 +68,7 @@ def load_and_clean_data():
     # Utilization Rate (how much of available credit is being used)
     df['UtilizationRate'] = df['RevolvingUtilizationOfUnsecuredLines'].clip(upper=1.5)
     
-    # Age groups
-    df['AgeGroup'] = pd.cut(df['age'], bins=[0, 25, 35, 45, 55, 65, 100], 
-                            labels=['18-25', '26-35', '36-45', '46-55', '56-65', '65+'])
+
     
     # Risk score based on late payments
     df['LatePaymentRisk'] = (
@@ -79,7 +77,7 @@ def load_and_clean_data():
         df['NumberOfTimes90DaysLate'] * 3
     )
     
-    print(f"  - Created 5 new features")
+    print(f"  - Created 4 new features")
     
     # Save cleaned data
     output_path = Path('public/data/cleaned_data.csv')

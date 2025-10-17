@@ -5,9 +5,9 @@ import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'CreditVision AI',
-  description: '',
-  generator: '',
+  title: 'RiskPulse AI - Enterprise Loan Default Prediction',
+  description: 'Professional-grade AI-powered credit risk assessment platform for financial institutions',
+  generator: 'Next.js',
 }
 
 export default function RootLayout({

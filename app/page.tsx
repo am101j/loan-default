@@ -83,7 +83,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t border-border mt-16">
         <div className="container mx-auto px-4 py-6 text-center text-sm text-muted-foreground">
-          <p>CreditVision AI • Built with Next.js, XGBoost & Advanced ML • Enterprise Risk Analytics Platform</p>
+          <p>RiskPulse AI • Built with Next.js, XGBoost & Advanced ML • Enterprise Risk Analytics Platform</p>
         </div>
       </footer>
     </div>
