@@ -14,7 +14,7 @@ A professional-grade AI-powered credit risk assessment platform that predicts lo
 - **Comprehensive Analytics**: Market trends and risk factor analysis
 
 ### Technical Highlights
-- **XGBoost ML Model**: 87%+ accuracy with 150K+ training samples
+- **XGBoost ML Model**: 75%+ accuracy with 150K+ training samples
 - **Enterprise Architecture**: Scalable, maintainable codebase with TypeScript
 - **Professional UI/UX**: Banking-grade interface with responsive design
 - **API-First Design**: RESTful APIs with comprehensive error handling
