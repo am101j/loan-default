@@ -46,11 +46,11 @@ export function BatchProcessor() {
       const text = await file.text()
       const lines = text.split('\n').filter(line => line.trim())
       const headers = lines[0].split(',').map(h => h.trim())
-      
-      // Validate headers
-      const requiredHeaders = ['age', 'monthlyIncome', 'debtRatio', 'creditUtilization', 'late90Days', 'late30Days']
+
+      // Validate headers - check for required fields
+      const requiredHeaders = ['monthlyIncome', 'debtRatio', 'creditUtilization', 'late30Days', 'late90Days']
       const missingHeaders = requiredHeaders.filter(h => !headers.includes(h))
-      
+
       if (missingHeaders.length > 0) {
         setError(`Missing required columns: ${missingHeaders.join(', ')}`)
         setProcessing(false)
@@ -58,64 +58,68 @@ export function BatchProcessor() {
       }
 
       const batchResults: BatchResult[] = []
-      
-      // Process each row
+
+      // Process each row using the backend ML model
       for (let i = 1; i < lines.length; i++) {
         const values = lines[i].split(',').map(v => v.trim())
         const rowData: any = {}
-        
+
         headers.forEach((header, index) => {
           rowData[header] = values[index]
         })
 
-        // Calculate risk (same logic as risk slider)
-        let riskScore = 0
-        riskScore += parseFloat(rowData.late90Days || 0) * 0.28
-        riskScore += parseFloat(rowData.late30Days || 0) * 0.08
-        riskScore += parseFloat(rowData.creditUtilization || 0) * 0.19
-        riskScore += (parseFloat(rowData.debtRatio || 0) / 10) * 0.15
-        
-        if (parseFloat(rowData.age || 0) < 30) riskScore += 0.05
-        if (parseFloat(rowData.monthlyIncome || 0) < 3000) riskScore += 0.08
-        else if (parseFloat(rowData.monthlyIncome || 0) < 5000) riskScore += 0.04
+        try {
+          // Call the same API endpoint used by individual predictions
+          const response = await fetch('/api/predict', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              monthlyIncome: rowData.monthlyIncome || '5000',
+              debtRatio: rowData.debtRatio || '0.3',
+              creditUtilization: rowData.creditUtilization || '0.25',
+              openCreditLines: rowData.openCreditLines || '5',
+              realEstateLoans: rowData.realEstateLoans || '1',
+              dependents: rowData.dependents || '0',
+              late30Days: rowData.late30Days || '0',
+              late60Days: rowData.late60Days || '0',
+              late90Days: rowData.late90Days || '0'
+            })
+          })
 
-        const probability = Math.min(Math.max(riskScore / 2, 0.05), 0.95)
-        const baseRate = 5.5
-        const riskPremium = probability * 15
-        const suggestedRate = baseRate + riskPremium
+          const prediction = await response.json()
 
-        let riskLevel = "Low Risk"
-        let decision = "APPROVE"
-        
-        if (probability >= 0.8) {
-          riskLevel = "High Risk"
-          decision = "DECLINE"
-        } else if (probability >= 0.6) {
-          riskLevel = "High Risk"
-          decision = "APPROVE_HIGH_RATE"
-        } else if (probability >= 0.3) {
-          riskLevel = "Medium Risk"
-          decision = "APPROVE_STANDARD"
-        } else {
-          riskLevel = "Low Risk"
-          decision = "APPROVE_PRIME"
+          if (prediction.error) {
+            throw new Error(prediction.error)
+          }
+
+          batchResults.push({
+            id: i,
+            age: parseFloat(rowData.age || 0),
+            monthlyIncome: parseFloat(rowData.monthlyIncome || 0),
+            defaultProbability: prediction.defaultProbability,
+            suggestedRate: prediction.suggestedRate || 0,
+            decision: prediction.pricingDecision,
+            riskLevel: prediction.riskLevel
+          })
+        } catch (rowError) {
+          // If API call fails for a row, use fallback
+          console.error(`Error processing row ${i}:`, rowError)
+          batchResults.push({
+            id: i,
+            age: parseFloat(rowData.age || 0),
+            monthlyIncome: parseFloat(rowData.monthlyIncome || 0),
+            defaultProbability: 0,
+            suggestedRate: 0,
+            decision: 'ERROR',
+            riskLevel: 'Error'
+          })
         }
-
-        batchResults.push({
-          id: i,
-          age: parseFloat(rowData.age || 0),
-          monthlyIncome: parseFloat(rowData.monthlyIncome || 0),
-          defaultProbability: probability,
-          suggestedRate: decision === "DECLINE" ? 0 : suggestedRate,
-          decision,
-          riskLevel
-        })
 
         // Update progress
         setProgress((i / (lines.length - 1)) * 100)
-        
-        // Small delay to show progress
-        await new Promise(resolve => setTimeout(resolve, 50))
+
+        // Small delay to prevent overwhelming the API
+        await new Promise(resolve => setTimeout(resolve, 100))
       }
 
       setResults(batchResults)
@@ -129,7 +133,7 @@ export function BatchProcessor() {
   const downloadResults = () => {
     const csvContent = [
       "ID,Age,Monthly Income,Default Risk %,Suggested APR %,Decision,Risk Level",
-      ...results.map(r => 
+      ...results.map(r =>
         `${r.id},${r.age},${r.monthlyIncome},${(r.defaultProbability * 100).toFixed(1)},${r.suggestedRate.toFixed(1)},${r.decision},${r.riskLevel}`
       )
     ].join('\n')
@@ -170,7 +174,7 @@ export function BatchProcessor() {
             <div className="space-y-2">
               <p className="text-lg font-medium text-slate-700">Upload CSV File</p>
               <p className="text-sm text-slate-500">
-                Required columns: age, monthlyIncome, debtRatio, creditUtilization, late90Days, late30Days
+                Required columns: monthlyIncome, debtRatio, creditUtilization, late30Days, late90Days
               </p>
             </div>
             <input
@@ -194,8 +198,8 @@ export function BatchProcessor() {
                 <FileSpreadsheet className="h-4 w-4 text-blue-600" />
                 <span className="text-sm font-medium text-blue-800">{file.name}</span>
               </div>
-              <Button 
-                onClick={processCSV} 
+              <Button
+                onClick={processCSV}
                 disabled={processing}
                 className="bg-blue-600 hover:bg-blue-700"
               >
@@ -267,10 +271,9 @@ export function BatchProcessor() {
                       <td className="p-3">{result.age}</td>
                       <td className="p-3">${result.monthlyIncome.toLocaleString()}</td>
                       <td className="p-3">
-                        <span className={`font-medium ${
-                          result.defaultProbability < 0.3 ? 'text-green-600' :
-                          result.defaultProbability < 0.6 ? 'text-yellow-600' : 'text-red-600'
-                        }`}>
+                        <span className={`font-medium ${result.defaultProbability < 0.3 ? 'text-green-600' :
+                            result.defaultProbability < 0.6 ? 'text-yellow-600' : 'text-red-600'
+                          }`}>
                           {(result.defaultProbability * 100).toFixed(1)}%
                         </span>
                       </td>
@@ -278,13 +281,12 @@ export function BatchProcessor() {
                         {result.decision === "DECLINE" ? "N/A" : `${result.suggestedRate.toFixed(1)}%`}
                       </td>
                       <td className="p-3">
-                        <Badge className={`${
-                          result.decision === "DECLINE" 
-                            ? 'bg-red-100 text-red-800' 
+                        <Badge className={`${result.decision === "DECLINE"
+                            ? 'bg-red-100 text-red-800'
                             : result.decision === "APPROVE_PRIME"
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-blue-100 text-blue-800'
-                        }`}>
+                              ? 'bg-green-100 text-green-800'
+                              : 'bg-blue-100 text-blue-800'
+                          }`}>
                           {result.decision === "DECLINE" ? "DECLINE" : "APPROVE"}
                         </Badge>
                       </td>

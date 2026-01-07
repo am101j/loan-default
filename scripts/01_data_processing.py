@@ -1,8 +1,3 @@
-"""
-Data Processing Pipeline for Loan Default Prediction
-Loads, cleans, and prepares the cs-training.csv dataset
-"""
-
 import pandas as pd
 import numpy as np
 from pathlib import Path
@@ -10,11 +5,10 @@ from pathlib import Path
 def load_and_clean_data():
     """Load and perform initial data cleaning"""
     
-    # Note: Users should place cs-training.csv in the /public/data/ folder
     data_path = Path('public/data/cs-training.csv')
     
     if not data_path.exists():
-        print("⚠️  Dataset not found!")
+        print("Dataset not found!")
         print("Please download cs-training.csv from:")
         print("https://www.kaggle.com/c/GiveMeSomeCredit/data")
         print("And place it in: public/data/cs-training.csv")
@@ -25,11 +19,11 @@ def load_and_clean_data():
     print(f"✓ Loaded dataset: {df.shape[0]} rows, {df.shape[1]} columns")
     
     # Display basic info
-    print("\n📊 Dataset Overview:")
+    print("\nDataset Overview:")
     print(df.head())
-    print("\n📈 Column Info:")
+    print("\ Column Info:")
     print(df.info())
-    print("\n📉 Missing Values:")
+    print("\nMissing Values:")
     print(df.isnull().sum())
     
     # Remove unnamed index column if exists
@@ -37,7 +31,7 @@ def load_and_clean_data():
         df = df.drop('Unnamed: 0', axis=1)
     
     # Handle missing values
-    print("\n🔧 Cleaning data...")
+    print("\nCleaning data...")
     
     # MonthlyIncome: fill with median
     if df['MonthlyIncome'].isnull().sum() > 0:
@@ -56,7 +50,7 @@ def load_and_clean_data():
         print(f"  - Removed age column from dataset")
     
     # Feature Engineering
-    print("\n⚙️  Engineering features...")
+    print("\n Engineering features...")
     
     # Debt-to-Income Ratio
     df['DebtRatio_Capped'] = df['DebtRatio'].clip(upper=df['DebtRatio'].quantile(0.95))
@@ -83,11 +77,11 @@ def load_and_clean_data():
     output_path = Path('public/data/cleaned_data.csv')
     output_path.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(output_path, index=False)
-    print(f"\n✅ Cleaned data saved to: {output_path}")
+    print(f"\n Cleaned data saved to: {output_path}")
     print(f"Final dataset: {df.shape[0]} rows, {df.shape[1]} columns")
     
     # Display class distribution
-    print("\n📊 Target Variable Distribution:")
+    print("Target Variable Distribution:")
     print(df['SeriousDlqin2yrs'].value_counts())
     print(f"Default Rate: {df['SeriousDlqin2yrs'].mean()*100:.2f}%")
     

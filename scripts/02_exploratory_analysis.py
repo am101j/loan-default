@@ -14,17 +14,17 @@ def perform_eda():
     data_path = Path('public/data/cleaned_data.csv')
     
     if not data_path.exists():
-        print("❌ Cleaned data not found. Please run 01_data_processing.py first")
+        print("Cleaned data not found. Please run 01_data_processing.py first")
         return
     
     df = pd.read_csv(data_path)
-    print(f"✓ Loaded cleaned dataset: {df.shape[0]} rows")
+    print(f"Loaded cleaned dataset: {df.shape[0]} rows")
     
     # Separate defaulters and non-defaulters
     defaulters = df[df['SeriousDlqin2yrs'] == 1]
     non_defaulters = df[df['SeriousDlqin2yrs'] == 0]
     
-    print("\n📊 Key Statistics:")
+    print("\n Key Statistics:")
     print(f"Total Borrowers: {len(df):,}")
     print(f"Defaulters: {len(defaulters):,} ({len(defaulters)/len(df)*100:.2f}%)")
     print(f"Non-Defaulters: {len(non_defaulters):,} ({len(non_defaulters)/len(df)*100:.2f}%)")
@@ -115,7 +115,7 @@ def perform_eda():
     with open(output_path, 'w') as f:
         json.dump(insights, f, indent=2)
     
-    print(f"\n✅ Analysis complete! Insights saved to: {output_path}")
+    print(f"\nAnalysis complete! Insights saved to: {output_path}")
 
 if __name__ == "__main__":
     perform_eda()

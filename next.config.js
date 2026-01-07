@@ -8,9 +8,7 @@ const nextConfig = {
     };
     return config;
   },
-  experimental: {
-    serverComponentsExternalPackages: ['tesseract.js']
-  }
+  serverExternalPackages: ['tesseract.js']
 }
 
 module.exports = nextConfig

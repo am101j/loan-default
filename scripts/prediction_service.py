@@ -25,10 +25,10 @@ def load_model():
             model = pickle.load(f)
         with open(model_dir / 'scaler.pkl', 'rb') as f:
             scaler = pickle.load(f)
-        print("✅ Model and scaler loaded successfully")
+        print("[OK] Model and scaler loaded successfully")
         return True
     except Exception as e:
-        print(f"❌ Failed to load model: {e}")
+        print(f"[ERROR] Failed to load model: {e}")
         return False
 
 @app.route('/predict', methods=['POST'])
@@ -140,7 +140,7 @@ def health():
 
 if __name__ == '__main__':
     if load_model():
-        print("🚀 Starting prediction service on http://localhost:5000")
+        print("[STARTING] Prediction service on http://localhost:5000")
         app.run(host='0.0.0.0', port=5000, debug=True)
     else:
-        print("❌ Cannot start service - model loading failed")
+        print("[ERROR] Cannot start service - model loading failed")

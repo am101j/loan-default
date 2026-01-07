@@ -5,9 +5,15 @@ import { Brain, Target, TrendingUp, Award } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Badge } from "@/components/ui/badge"
 
+interface ModelData {
+  roc_auc_score: number
+  test_samples: number
+  feature_importance: Array<{ feature: string; importance: number }>
+}
+
 export function ModelInsights() {
-  const [modelData, setModelData] = useState(null)
-  
+  const [modelData, setModelData] = useState<ModelData | null>(null)
+
   useEffect(() => {
     fetch('/models/model_info.json')
       .then(res => {
@@ -33,11 +39,11 @@ export function ModelInsights() {
         })
       })
   }, [])
-  
+
   if (!modelData) {
     return <div>Loading model insights...</div>
   }
-  
+
   return (
     <div className="space-y-6">
       <Card className="bg-white border-slate-200 shadow-sm">
@@ -86,9 +92,9 @@ export function ModelInsights() {
                   <span className="text-lg font-bold text-slate-800">{(feature.importance * 100).toFixed(1)}%</span>
                 </div>
                 <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-slate-800 rounded-full" 
-                    style={{ width: `${feature.importance * 100}%` }} 
+                  <div
+                    className="h-full bg-slate-800 rounded-full"
+                    style={{ width: `${feature.importance * 100}%` }}
                   />
                 </div>
               </div>
