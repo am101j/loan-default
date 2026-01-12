@@ -5,7 +5,10 @@ A professional-grade AI-powered credit risk assessment platform that predicts lo
 ![App Screenshot](assets/demo.png)
 
 ## Demo Video
-[Click here to watch the demo](./demo.mp4)
+
+
+https://github.com/user-attachments/assets/00fd57ad-3be7-49f7-aab0-943368873d1c
+
 
 ## 🚀 Features
 
