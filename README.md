@@ -2,8 +2,6 @@
 
 A professional-grade AI-powered credit risk assessment platform that predicts loan default probability using advanced machine learning, helping financial institutions make data-driven lending decisions.
 
-![App Screenshot](assets/demo.png)
-
 ## Demo Video
 
 
